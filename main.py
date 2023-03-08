@@ -1,71 +1,13 @@
-import pygame
 import sys
-import random
 import pygame_menu
+from utils import *
 
 pygame.init()
-SIZE_BLOCK = 20  # Размер одного блока
-COUNT_BLOCKS = 20  # Количество блоков по горизонтали и вертикали
-HEADER_MARGIN = 70  # Отступ от верха окна
-MARGIN = 1  # Отступ блоков друг от друга
-SIZE = [SIZE_BLOCK * COUNT_BLOCKS + 2 * SIZE_BLOCK + MARGIN * COUNT_BLOCKS,
-        SIZE_BLOCK * COUNT_BLOCKS + 2 * SIZE_BLOCK + MARGIN * COUNT_BLOCKS + HEADER_MARGIN]  # Размеры окна
-
-# Цвета игры
-FRAME_COLOR = (0, 255, 204)  # Цвет рамки
-WHITE = (255, 255, 255)
-BLUE = (204, 255, 255)
-RED = (224, 0, 0)
-BLACK = (0, 0, 0)
-HEADER_COLOR = (0, 204, 153)  # Цвет заголовка
-SNAKE_COLOR = (0, 102, 0)
 
 screen = pygame.display.set_mode(SIZE)  # создание экрана и присвоение переменной
 pygame.display.set_caption('Змейка')
 timer = pygame.time.Clock()  # создание объекта "Таймер" для задания количества кадров в секунду
 courier = pygame.font.SysFont('courier', 36)  # Создание шрифта
-
-
-class SnakeBlock:
-    """Класс блока змейки c координатами левого верхнего угла х и у"""
-
-    def __init__(self, x: int, y: int):
-        self.x = x
-        self.y = y
-
-    def is_inside(self):
-        return 0 <= self.x < COUNT_BLOCKS and 0 <= self.y < COUNT_BLOCKS
-
-    def __eq__(self, other):
-        return isinstance(other, SnakeBlock) and self.x == other.x and self.y == other.y
-
-
-def draw_block(color: tuple[int, int, int], row: int, column: int) -> None:
-    """
-    Рисует на экране в переданном ряду и колонке блок
-    :param color: цвет заливки блока
-    :param row: ряд
-    :param column: колонка
-    :return: None
-    """
-    coord_x = SIZE_BLOCK + column * SIZE_BLOCK + MARGIN * (column + 1)  # Координата X блока
-    coord_y = HEADER_MARGIN + SIZE_BLOCK + row * SIZE_BLOCK + MARGIN * (row + 1)  # Координата у блока
-    pygame.draw.rect(screen, color, [coord_x, coord_y, SIZE_BLOCK, SIZE_BLOCK])
-
-
-def get_random_block(blocks: list[SnakeBlock]) -> SnakeBlock:
-    """
-    Функция создает блок по случайным координатам
-    :return: Блок класса SnakeBlock
-    """
-    random_block = SnakeBlock(random.randint(0, SIZE_BLOCK - 1), random.randint(0, SIZE_BLOCK - 1))
-
-    # Цикл если координаты блока совпадают с координатами одного из блоков змейки
-    while random_block in blocks:
-        random_block.x = random.randint(0, SIZE_BLOCK - 1)
-        random_block.y = random.randint(0, SIZE_BLOCK - 1)
-
-    return random_block
 
 
 def start_the_game():
