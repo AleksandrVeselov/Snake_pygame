@@ -61,7 +61,7 @@ def start_the_game():
                     color = BLUE
                 else:
                     color = WHITE
-                draw_block(color, row, column)
+                draw_block(color, row, column, screen)
 
         head = snake_blocks[-1]  # голова змейки
 
@@ -75,17 +75,17 @@ def start_the_game():
             total += 1
             speed = total // 5 + 1
             food = get_random_block(snake_blocks)
-        draw_block(RED, food.x, food.y)
+        draw_block(RED, food.x, food.y, screen)
 
         # Отрисовка змейки
         for i in range(len(snake_blocks)):
 
             # отрисовка головы (последнего значение в списке snake_blocks) черным цветом
             if i == len(snake_blocks) - 1:
-                draw_block(BLACK, snake_blocks[i].x, snake_blocks[i].y)
+                draw_block(BLACK, snake_blocks[i].x, snake_blocks[i].y, screen)
 
             else:
-                draw_block(SNAKE_COLOR, snake_blocks[i].x, snake_blocks[i].y)
+                draw_block(SNAKE_COLOR, snake_blocks[i].x, snake_blocks[i].y, screen)
 
         pygame.display.flip()  # Обновление экрана
 

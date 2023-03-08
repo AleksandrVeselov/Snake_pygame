@@ -17,9 +17,10 @@ class SnakeBlock:
         return isinstance(other, SnakeBlock) and self.x == other.x and self.y == other.y
 
 
-def draw_block(color: tuple[int, int, int], row: int, column: int) -> None:
+def draw_block(color: tuple[int, int, int], row: int, column: int, screen: pygame.display) -> None:
     """
     Рисует на экране в переданном ряду и колонке блок
+    :param screen: экран для отображения блоков
     :param color: цвет заливки блока
     :param row: ряд
     :param column: колонка
