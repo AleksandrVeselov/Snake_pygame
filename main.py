@@ -1,4 +1,5 @@
 import pygame
+import sys
 
 SIZE_BLOCK = 20  # Размер одного блока
 COUNT_BLOCKS = 20  # Количество блоков по горизонтали и вертикали
@@ -25,6 +26,9 @@ class SnakeBlock:
         self.x = x
         self.y = y
 
+    def is_inside(self):
+        return 0 <= self.x < SIZE_BLOCK and 0 <= self.y < SIZE_BLOCK
+
 
 def draw_block(color: tuple[int, int, int], row: int, column: int) -> None:
     """
@@ -39,7 +43,9 @@ def draw_block(color: tuple[int, int, int], row: int, column: int) -> None:
     pygame.draw.rect(screen, color, [coord_x, coord_y, SIZE_BLOCK, SIZE_BLOCK])
 
 
-snake_blocks = [SnakeBlock(9, 9)]  # Список блоков змейки
+snake_blocks = [SnakeBlock(9, 8), SnakeBlock(9, 9)]  # Список блоков змейки
+
+# Задание первоначального движения змейки по оси Х
 d_row = 0
 d_col = 1
 
@@ -49,6 +55,7 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
+            sys.exit()
 
         elif event.type == pygame.KEYDOWN:
             # Движение змейки вверх
@@ -80,11 +87,17 @@ while True:
                 color = WHITE
             draw_block(color, row, column)
 
+    head = snake_blocks[-1]  # голова змейки
+    if not head.is_inside():
+        pygame.quit()
+        sys.exit()
+
     # Отрисовка змейки
     for block in snake_blocks:
         draw_block(SNAKE_COLOR, block.x, block.y)
-        block.x += d_row
-        block.y += d_col
+    new_head = SnakeBlock(head.x + d_row, head.y + d_col)  # Новая голова по ходу движения
+    snake_blocks.append(new_head)  # Добавление новой головы в список блоков змейки
+    snake_blocks.pop(0)
 
     pygame.display.flip()  # Обновление экрана
     timer.tick(2)  # число кадров в секунду
