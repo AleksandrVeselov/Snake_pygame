@@ -19,18 +19,26 @@ pygame.display.set_caption('Змейка')
 
 
 class SnakeBlock:
-    def __init__(self, x, y):
+    """Класс блока змейки c координатами левого верхнего угла х и у"""
+    def __init__(self, x: int, y: int):
         self.x = x
         self.y = y
 
 
-def draw_block(color, row, column):
+def draw_block(color: tuple[int], row: int, column: int) -> None:
+    """
+    Рисует на экране в переданном ряду и колонке блок
+    :param color: цвет заливки блока
+    :param row: ряд
+    :param column: колонка
+    :return: None
+    """
     coord_x = SIZE_BLOCK + column * SIZE_BLOCK + MARGIN * (column + 1)  # Координата X блока
     coord_y = HEADER_MARGIN + SIZE_BLOCK + row * SIZE_BLOCK + MARGIN * (row + 1)  # Координата у блока
     pygame.draw.rect(screen, color, [coord_x, coord_y, SIZE_BLOCK, SIZE_BLOCK])
 
 
-snake_blocks = [SnakeBlock(9, 9)]
+snake_blocks = [SnakeBlock(9, 9)]  # Список блоков змейки
 
 while True:
     for event in pygame.event.get():
@@ -49,6 +57,7 @@ while True:
                 color = WHITE
             draw_block(color, row, column)
 
+    # Отрисовка змейки
     for block in snake_blocks:
         draw_block(SNAKE_COLOR, block.x, block.y)
 
