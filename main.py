@@ -16,6 +16,7 @@ SNAKE_COLOR = (0, 102, 0)
 
 screen = pygame.display.set_mode(SIZE)  # создание экрана и присвоение переменной
 pygame.display.set_caption('Змейка')
+timer = pygame.time.Clock()  # создание объекта "Таймер" для задания количества кадров в секунду
 
 
 class SnakeBlock:
@@ -25,7 +26,7 @@ class SnakeBlock:
         self.y = y
 
 
-def draw_block(color: tuple[int], row: int, column: int) -> None:
+def draw_block(color: tuple[int, int, int], row: int, column: int) -> None:
     """
     Рисует на экране в переданном ряду и колонке блок
     :param color: цвет заливки блока
@@ -39,11 +40,33 @@ def draw_block(color: tuple[int], row: int, column: int) -> None:
 
 
 snake_blocks = [SnakeBlock(9, 9)]  # Список блоков змейки
+d_row = 0
+d_col = 1
 
 while True:
+
+    # Обработка событий нажатия клавиш
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
+
+        elif event.type == pygame.KEYDOWN:
+            # Движение змейки вверх
+            if event.key == pygame.K_UP and d_col != 0:
+                d_row -= 1
+                d_col = 0
+            # Движение змейки вниз
+            elif event.key == pygame.K_DOWN and d_col != 0:
+                d_row = 1
+                d_col = 0
+            # Движение змейки влево
+            elif event.key == pygame.K_LEFT and d_row != 0:
+                d_row = 0
+                d_col -= 1
+            # Движение змейки вправо
+            elif event.key == pygame.K_RIGHT and d_row != 0:
+                d_row = 0
+                d_col = 1
 
     screen.fill(FRAME_COLOR)  # Заливка экрана цветом
     pygame.draw.rect(screen, HEADER_COLOR, [0, 0, SIZE[0], HEADER_MARGIN])
@@ -60,5 +83,8 @@ while True:
     # Отрисовка змейки
     for block in snake_blocks:
         draw_block(SNAKE_COLOR, block.x, block.y)
+        block.x += d_row
+        block.y += d_col
 
     pygame.display.flip()  # Обновление экрана
+    timer.tick(2)  # число кадров в секунду
