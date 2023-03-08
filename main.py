@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 
 SIZE_BLOCK = 20  # Размер одного блока
 COUNT_BLOCKS = 20  # Количество блоков по горизонтали и вертикали
@@ -12,6 +13,7 @@ SIZE = [SIZE_BLOCK * COUNT_BLOCKS + 2 * SIZE_BLOCK + MARGIN * COUNT_BLOCKS,
 FRAME_COLOR = (0, 255, 204)  # Цвет рамки
 WHITE = (255, 255, 255)
 BLUE = (204, 255, 255)
+RED = (224, 0, 0)
 HEADER_COLOR = (0, 204, 153)  # Цвет заголовка
 SNAKE_COLOR = (0, 102, 0)
 
@@ -27,7 +29,10 @@ class SnakeBlock:
         self.y = y
 
     def is_inside(self):
-        return 0 <= self.x < SIZE_BLOCK and 0 <= self.y < SIZE_BLOCK
+        return 0 <= self.x < COUNT_BLOCKS and 0 <= self.y < COUNT_BLOCKS
+
+    def __eq__(self, other):
+        return isinstance(other, SnakeBlock) and self.x == other.x and self.y == other.y
 
 
 def draw_block(color: tuple[int, int, int], row: int, column: int) -> None:
@@ -43,7 +48,23 @@ def draw_block(color: tuple[int, int, int], row: int, column: int) -> None:
     pygame.draw.rect(screen, color, [coord_x, coord_y, SIZE_BLOCK, SIZE_BLOCK])
 
 
+def get_random_block() -> SnakeBlock:
+    """
+    Функция создает блок по случайным координатам
+    :return: Блок класса SnakeBlock
+    """
+    random_block = SnakeBlock(random.randint(0, SIZE_BLOCK - 1), random.randint(0, SIZE_BLOCK - 1))
+
+    # Цикл если координаты блока совпадают с координатами одного из блоков змейки
+    while random_block in snake_blocks:
+        random_block.x = random.randint(0, SIZE_BLOCK - 1)
+        random_block.y = random.randint(0, SIZE_BLOCK - 1)
+
+    return random_block
+
+
 snake_blocks = [SnakeBlock(9, 8), SnakeBlock(9, 9)]  # Список блоков змейки
+food = get_random_block()  # Блок еды для змейки
 
 # Задание первоначального движения змейки по оси Х
 d_row = 0
@@ -88,9 +109,16 @@ while True:
             draw_block(color, row, column)
 
     head = snake_blocks[-1]  # голова змейки
+
+    # проверка на расположение змейки в пределах игрового поля
     if not head.is_inside():
         pygame.quit()
         sys.exit()
+
+    # Отрисовка еды
+    if food == head:
+        food = get_random_block()
+    draw_block(RED, food.x, food.y)
 
     # Отрисовка змейки
     for block in snake_blocks:
@@ -100,4 +128,4 @@ while True:
     snake_blocks.pop(0)
 
     pygame.display.flip()  # Обновление экрана
-    timer.tick(2)  # число кадров в секунду
+    timer.tick(3)  # число кадров в секунду
